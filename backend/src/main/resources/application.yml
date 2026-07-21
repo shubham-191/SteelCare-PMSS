@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: pmms
+  datasource:
+    url: jdbc:mysql://localhost:3307/steelcare?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
+    username: root
+    password: root
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+  task:
+    scheduling:
+      pool:
+        size: 2
+
+steelcare:
+  jwt:
+    # 256-bit base64 encoded secret key
+    secret: 9a2f98282e3d4c3a9f0293d39db27cbfd27d76a2139b4bca3b2dbcd60d23c14d
+    expiration: 86400000 # 24 hours in milliseconds
+
+server:
+  port: 8080
+
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
