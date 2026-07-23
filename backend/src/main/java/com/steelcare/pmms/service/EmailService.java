@@ -7,6 +7,7 @@ import com.steelcare.pmms.repository.EmployeeRepository;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.logging.Logger;
@@ -88,6 +89,7 @@ public class EmailService {
                 .orElse("admin@steelcare.com");
     }
 
+    @Async
     public void sendTaskScheduledEmails(Maintenance task, String creatorName) {
         Employee engineer = task.getEngineer();
 
@@ -152,6 +154,7 @@ public class EmailService {
         sendHtmlEmail(getAdminEmail(), adminSubject, getHtmlTemplate("Maintenance Scheduled", adminContent));
     }
 
+    @Async
     public void sendTaskCompletedEmail(Maintenance task) {
         Employee engineer = task.getEngineer();
 
