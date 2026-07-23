@@ -10,7 +10,8 @@ import {
   Cpu, 
   MapPin, 
   Building,
-  Info
+  Info,
+  Download
 } from 'lucide-react';
 
 const Machines = () => {
@@ -156,6 +157,77 @@ const Machines = () => {
     return m.status === statusFilter;
   });
 
+  const handleDownloadCSV = () => {
+    const headers = [
+      'Machine Code',
+      'Machine Name',
+      'Department',
+      'Location',
+      'RAM',
+      'Processor',
+      'Storage',
+      'OS',
+      'Use case / Software',
+      'Installation Date',
+      'Runtime Hours',
+      'Status',
+      'Last Maintenance Date',
+      'Next Maintenance Date'
+    ];
+
+    const extractParam = (specs, key) => {
+      if (!specs) return 'N/A';
+      // Match the pattern like "Key: Value" up to the next comma or end of string
+      const regex = new RegExp(`${key}:\\s*([^,]+)(?:,|$)`, 'i');
+      const match = specs.match(regex);
+      return match ? match[1].trim() : 'N/A';
+    };
+
+    const rows = machines.map(m => {
+      // If it contains "RAM:", we parse it, otherwise we put the full value under "Use case / Software"
+      const isConfiguredComputer = m.manufacturer && m.manufacturer.includes('RAM:');
+      
+      const ram = isConfiguredComputer ? extractParam(m.manufacturer, 'RAM') : 'N/A';
+      const processor = isConfiguredComputer ? extractParam(m.manufacturer, 'Processor') : 'N/A';
+      const storage = isConfiguredComputer ? extractParam(m.manufacturer, 'Storage') : 'N/A';
+      const os = isConfiguredComputer ? extractParam(m.manufacturer, 'OS') : 'N/A';
+      const use = isConfiguredComputer ? extractParam(m.manufacturer, 'Use') : (m.manufacturer || 'N/A');
+
+      return [
+        `"${m.machineCode.replace(/"/g, '""')}"`,
+        `"${m.machineName.replace(/"/g, '""')}"`,
+        `"${m.department.replace(/"/g, '""')}"`,
+        `"${m.location.replace(/"/g, '""')}"`,
+        `"${ram.replace(/"/g, '""')}"`,
+        `"${processor.replace(/"/g, '""')}"`,
+        `"${storage.replace(/"/g, '""')}"`,
+        `"${os.replace(/"/g, '""')}"`,
+        `"${use.replace(/"/g, '""')}"`,
+        m.installationDate,
+        m.runtimeHours,
+        m.status,
+        m.lastMaintenanceDate || 'N/A',
+        m.nextMaintenanceDate || 'N/A'
+      ];
+    });
+
+    // Add BOM (\uFEFF) for proper UTF-8 Excel mapping
+    const csvContent = "\uFEFF" + [
+      headers.join(','),
+      ...rows.map(row => row.join(','))
+    ].join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.setAttribute('download', `machines_status_report_${new Date().toISOString().split('T')[0]}.csv`);
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
     <div className="space-y-6">
       
@@ -166,13 +238,22 @@ const Machines = () => {
           <p className="text-sm text-gray-400 mt-1">Register, configure, and monitor shopfloor assets.</p>
         </div>
         {isAdmin() && (
-          <button
-            onClick={handleOpenAddModal}
-            className="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-indigo-600/20 transition"
-          >
-            <Plus className="h-4.5 w-4.5" />
-            <span>Add Machine</span>
-          </button>
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={handleDownloadCSV}
+              className="flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-emerald-600/20 transition"
+            >
+              <Download className="h-4.5 w-4.5" />
+              <span>Download CSV</span>
+            </button>
+            <button
+              onClick={handleOpenAddModal}
+              className="flex items-center space-x-2 bg-indigo-600 hover:bg-indigo-500 text-white px-4 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-indigo-600/20 transition"
+            >
+              <Plus className="h-4.5 w-4.5" />
+              <span>Add Machine</span>
+            </button>
+          </div>
         )}
       </div>
 

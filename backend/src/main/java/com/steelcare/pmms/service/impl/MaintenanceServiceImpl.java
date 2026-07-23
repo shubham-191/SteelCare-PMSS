@@ -9,6 +9,7 @@ import com.steelcare.pmms.repository.EmployeeRepository;
 import com.steelcare.pmms.repository.MachineRepository;
 import com.steelcare.pmms.repository.MaintenanceRepository;
 import com.steelcare.pmms.repository.NotificationRepository;
+import com.steelcare.pmms.service.EmailService;
 import com.steelcare.pmms.service.MaintenanceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,17 +27,20 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     private final MachineRepository machineRepository;
     private final EmployeeRepository employeeRepository;
     private final NotificationRepository notificationRepository;
+    private final EmailService emailService;
 
     public MaintenanceServiceImpl(
             MaintenanceRepository maintenanceRepository,
             MachineRepository machineRepository,
             EmployeeRepository employeeRepository,
-            NotificationRepository notificationRepository
+            NotificationRepository notificationRepository,
+            EmailService emailService
     ) {
         this.maintenanceRepository = maintenanceRepository;
         this.machineRepository = machineRepository;
         this.employeeRepository = employeeRepository;
         this.notificationRepository = notificationRepository;
+        this.emailService = emailService;
     }
 
     @Override
@@ -60,7 +64,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    public MaintenanceResponseDto createMaintenance(MaintenanceRequestDto requestDto) {
+    public MaintenanceResponseDto createMaintenance(MaintenanceRequestDto requestDto, String creatorName) {
         Machine machine = machineRepository.findById(requestDto.getMachineId())
                 .orElseThrow(() -> new ResourceNotFoundException("Machine not found with id: " + requestDto.getMachineId()));
         
@@ -73,6 +77,9 @@ public class MaintenanceServiceImpl implements MaintenanceService {
 
         Maintenance maintenance = MaintenanceMapper.toEntity(requestDto, machine, engineer);
         Maintenance saved = maintenanceRepository.save(maintenance);
+
+        // Send Email alerts
+        emailService.sendTaskScheduledEmails(saved, creatorName);
 
         // Generate assignment notification
         String msg = String.format("New maintenance task assigned to %s for machine %s (%s)", 
@@ -88,7 +95,7 @@ public class MaintenanceServiceImpl implements MaintenanceService {
     }
 
     @Override
-    public MaintenanceResponseDto updateMaintenance(Long id, MaintenanceRequestDto requestDto) {
+    public MaintenanceResponseDto updateMaintenance(Long id, MaintenanceRequestDto requestDto, String updaterName) {
         Maintenance maintenance = maintenanceRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Maintenance task not found with id: " + id));
 
@@ -103,11 +110,13 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         }
 
         // Detect status transition to update machine status/dates
+        boolean justCompleted = false;
         MaintenanceStatus newStatus = requestDto.getStatus();
         if (newStatus != null && newStatus != maintenance.getStatus()) {
             if (newStatus == MaintenanceStatus.IN_PROGRESS) {
                 machine.setStatus(MachineStatus.UNDER_MAINTENANCE);
             } else if (newStatus == MaintenanceStatus.COMPLETED) {
+                justCompleted = true;
                 machine.setStatus(MachineStatus.RUNNING);
                 LocalDate completionDate = requestDto.getCompletedDate() != null ? requestDto.getCompletedDate() : LocalDate.now();
                 maintenance.setCompletedDate(completionDate);
@@ -132,6 +141,12 @@ public class MaintenanceServiceImpl implements MaintenanceService {
         maintenance.setRemarks(requestDto.getRemarks());
 
         Maintenance updated = maintenanceRepository.save(maintenance);
+
+        // Send completion email to admin
+        if (justCompleted) {
+            emailService.sendTaskCompletedEmail(updated);
+        }
+
         return MaintenanceMapper.toDto(updated);
     }
 

@@ -8,8 +8,8 @@ import java.util.List;
 public interface MaintenanceService {
     List<MaintenanceResponseDto> getAllMaintenances(Long engineerId);
     MaintenanceResponseDto getMaintenanceById(Long id);
-    MaintenanceResponseDto createMaintenance(MaintenanceRequestDto requestDto);
-    MaintenanceResponseDto updateMaintenance(Long id, MaintenanceRequestDto requestDto);
+    MaintenanceResponseDto createMaintenance(MaintenanceRequestDto requestDto, String creatorName);
+    MaintenanceResponseDto updateMaintenance(Long id, MaintenanceRequestDto requestDto, String updaterName);
     void deleteMaintenance(Long id);
     List<MaintenanceResponseDto> getOverdueMaintenances();
     List<MaintenanceResponseDto> getMaintenanceHistoryForMachine(Long machineId);

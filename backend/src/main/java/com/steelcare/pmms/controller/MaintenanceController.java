@@ -45,8 +45,11 @@ public class MaintenanceController {
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'EMPLOYEE')")
     @Operation(summary = "Create a new maintenance task / schedule maintenance (Admin and Employee only)")
-    public ResponseEntity<MaintenanceResponseDto> createMaintenance(@Valid @RequestBody MaintenanceRequestDto requestDto) {
-        return new ResponseEntity<>(maintenanceService.createMaintenance(requestDto), HttpStatus.CREATED);
+    public ResponseEntity<MaintenanceResponseDto> createMaintenance(
+            @Valid @RequestBody MaintenanceRequestDto requestDto,
+            @AuthenticationPrincipal Employee currentUser
+    ) {
+        return new ResponseEntity<>(maintenanceService.createMaintenance(requestDto, currentUser.getName()), HttpStatus.CREATED);
     }
 
     @PutMapping("/{id}")
@@ -70,7 +73,7 @@ public class MaintenanceController {
             requestDto.setScheduledDate(existing.getScheduledDate());
         }
         
-        return ResponseEntity.ok(maintenanceService.updateMaintenance(id, requestDto));
+        return ResponseEntity.ok(maintenanceService.updateMaintenance(id, requestDto, currentUser.getName()));
     }
 
     @DeleteMapping("/{id}")

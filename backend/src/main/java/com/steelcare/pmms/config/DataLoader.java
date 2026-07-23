@@ -239,7 +239,7 @@ public class DataLoader implements CommandLineRunner {
                     .manufacturer("RAM: 8GB, Processor: N/A, Storage: 231GB, OS: WINDOWS 10 PRO, Use:  NO USE")
                     .installationDate(LocalDate.of(2025, 3, 10))
                     .runtimeHours(100.0)
-                    .status(MachineStatus.UNDER_MAINTENANCE)
+                    .status(MachineStatus.RUNNING)
                     .lastMaintenanceDate(LocalDate.of(2026, 6, 1))
                     .nextMaintenanceDate(LocalDate.of(2026, 8, 1))
                     .build(),
@@ -287,7 +287,7 @@ public class DataLoader implements CommandLineRunner {
                     .manufacturer("RAM: SYSTEM NOT WORKING, Processor: SYSTEM NOT WORKING, Storage: SYSTEM NOT WORKING, OS: SYSTEM NOT WORKING, Use: SYSTEM NOT WORKING")
                     .installationDate(LocalDate.of(2025, 3, 10))
                     .runtimeHours(100.0)
-                    .status(MachineStatus.DOWN)
+                    .status(MachineStatus.RUNNING)
                     .lastMaintenanceDate(LocalDate.of(2026, 6, 1))
                     .nextMaintenanceDate(LocalDate.of(2026, 8, 1))
                     .build(),
@@ -323,7 +323,7 @@ public class DataLoader implements CommandLineRunner {
                     .manufacturer("RAM: 8 GB, Processor: i5 PROCESSOR, Storage: 301 GB, OS: WINDOWS 10 PRO, Use: NO USE")
                     .installationDate(LocalDate.of(2025, 3, 10))
                     .runtimeHours(100.0)
-                    .status(MachineStatus.UNDER_MAINTENANCE)
+                    .status(MachineStatus.RUNNING)
                     .lastMaintenanceDate(LocalDate.of(2026, 6, 1))
                     .nextMaintenanceDate(LocalDate.of(2026, 8, 1))
                     .build(),
@@ -407,7 +407,7 @@ public class DataLoader implements CommandLineRunner {
                     .manufacturer("RAM: 8GB, Processor: i5 PROCESSOR, Storage: 231GB, OS: WINDOWS 10 PRO, Use:  NO USE")
                     .installationDate(LocalDate.of(2025, 3, 10))
                     .runtimeHours(100.0)
-                    .status(MachineStatus.UNDER_MAINTENANCE)
+                    .status(MachineStatus.RUNNING)
                     .lastMaintenanceDate(LocalDate.of(2026, 6, 1))
                     .nextMaintenanceDate(LocalDate.of(2026, 8, 1))
                     .build()

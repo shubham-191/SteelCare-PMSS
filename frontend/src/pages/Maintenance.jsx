@@ -139,6 +139,7 @@ const Maintenance = () => {
 
   const handleFormSubmit = async (e) => {
     e.preventDefault();
+    console.log("Form data submitted:", formData);
     if (!formData.machineId || !formData.engineerId || !formData.maintenanceType || !formData.description || !formData.scheduledDate) {
       setFormError('Please fill in all mandatory fields.');
       return;
