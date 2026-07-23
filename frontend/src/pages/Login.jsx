@@ -194,12 +194,12 @@ const Login = () => {
 
               <div>
                 <label className="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">System Role</label>
-                <div className="grid grid-cols-3 gap-2 mt-1">
+                <div className="grid grid-cols-2 gap-3 mt-1">
                   <button
                     type="button"
                     onClick={() => setFormData({ ...formData, role: 'ENGINEER' })}
                     className={`
-                      py-2.5 rounded-xl border text-[10px] font-semibold transition uppercase tracking-wider text-center
+                      py-2.5 rounded-xl border text-xs font-semibold transition uppercase tracking-wider text-center
                       ${formData.role === 'ENGINEER'
                         ? 'bg-indigo-600/10 border-indigo-500 text-indigo-400 shadow-md shadow-indigo-600/5'
                         : 'border-gray-800 text-gray-500 hover:text-gray-300 hover:border-gray-700'}
@@ -211,25 +211,13 @@ const Login = () => {
                     type="button"
                     onClick={() => setFormData({ ...formData, role: 'EMPLOYEE' })}
                     className={`
-                      py-2.5 rounded-xl border text-[10px] font-semibold transition uppercase tracking-wider text-center
+                      py-2.5 rounded-xl border text-xs font-semibold transition uppercase tracking-wider text-center
                       ${formData.role === 'EMPLOYEE'
                         ? 'bg-indigo-600/10 border-indigo-500 text-indigo-400 shadow-md shadow-indigo-600/5'
                         : 'border-gray-800 text-gray-500 hover:text-gray-300 hover:border-gray-700'}
                     `}
                   >
                     Employee
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setFormData({ ...formData, role: 'ADMIN' })}
-                    className={`
-                      py-2.5 rounded-xl border text-[10px] font-semibold transition uppercase tracking-wider text-center
-                      ${formData.role === 'ADMIN'
-                        ? 'bg-indigo-600/10 border-indigo-500 text-indigo-400 shadow-md shadow-indigo-600/5'
-                        : 'border-gray-800 text-gray-500 hover:text-gray-300 hover:border-gray-700'}
-                    `}
-                  >
-                    Admin
                   </button>
                 </div>
               </div>

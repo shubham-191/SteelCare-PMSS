@@ -59,6 +59,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public AuthResponse register(RegisterRequest request) {
+        if (request.getRole() == Role.ADMIN) {
+            throw new IllegalArgumentException("Registration of Administrator accounts is prohibited.");
+        }
         if (employeeRepository.existsByEmail(request.getEmail())) {
             throw new IllegalArgumentException("Email already exists: " + request.getEmail());
         }
