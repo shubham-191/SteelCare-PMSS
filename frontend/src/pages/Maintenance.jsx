@@ -93,8 +93,8 @@ const Maintenance = () => {
 
   const handleOpenAddModal = () => {
     setFormData({
-      machineId: machines[0]?.id || '',
-      engineerId: engineers[0]?.id || '',
+      machineId: '',
+      engineerId: '',
       maintenanceType: '',
       description: '',
       scheduledDate: new Date().toISOString().split('T')[0],
@@ -384,6 +384,7 @@ const Maintenance = () => {
                   className="w-full glass-input px-3.5 py-2.5 rounded-xl text-xs"
                   required
                 >
+                  <option value="">-- Select Machine --</option>
                   {machines.map(m => (
                     <option key={m.id} value={m.id}>{m.machineName} ({m.machineCode})</option>
                   ))}
@@ -399,6 +400,7 @@ const Maintenance = () => {
                   className="w-full glass-input px-3.5 py-2.5 rounded-xl text-xs"
                   required
                 >
+                  <option value="">-- Select Engineer --</option>
                   {engineers.map(eng => (
                     <option key={eng.id} value={eng.id}>{eng.name} ({eng.email})</option>
                   ))}
